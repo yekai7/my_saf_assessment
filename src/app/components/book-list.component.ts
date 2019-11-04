@@ -17,10 +17,11 @@ export class BookListComponent implements OnInit {
   books: BooksResponse = null;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute
-      , private bookSvc: BookService) { }
+    , private bookSvc: BookService) { }
 
   ngOnInit() {
     const state = window.history.state;
+    console.log(state)
     if (!state['terms'])
       return this.router.navigate(['/']);
 
@@ -29,7 +30,7 @@ export class BookListComponent implements OnInit {
 
     const searchCriterial: SearchCriteria = {
       terms: this.terms,
-      limit: this.limit
+      limit: this.limit,
     }
     this.bookSvc.getBooks(searchCriterial)
       .then(result => {
@@ -42,15 +43,45 @@ export class BookListComponent implements OnInit {
 
   next() {
     //TODO - for Task 4
+    this.bookSvc.getBooks({
+      terms: this.terms,
+      offset: this.offset += 10,
+      limit: this.limit
+    })
+      .then(result => {
+        if (result.data.length == 0) {
+          alert("You've reached the end of results.");
+        } else {
+          this.books = result;
+        }
+      }).catch(error => {
+        const errorResponse = error as ErrorResponse;
+        alert(`Status: ${errorResponse.status}\nMessage: ${errorResponse.message}`)
+      })
   }
 
   previous() {
     //TODO - for Task 4
+    if ((this.offset - 10) < 0) {
+      alert("You've reach the first result!")
+    } else {
+      this.bookSvc.getBooks({
+        terms: this.terms,
+        offset: this.offset -= 10,
+        limit: this.limit
+      })
+        .then(result => {
+          this.books = result;
+        }).catch(error => {
+          const errorResponse = error as ErrorResponse;
+          alert(`Status: ${errorResponse.status}\nMessage: ${errorResponse.message}`)
+        })
+    }
   }
-
   bookDetails(book_id: string) {
     //TODO
     console.info('Book id: ', book_id);
+    this.router.navigate(['/book', book_id]);
   }
 
   back() {

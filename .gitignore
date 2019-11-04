@@ -47,5 +47,6 @@ Thumbs.db
 
 
 /server/node_modules
-/server/config.json
+/server/config.js
 /server/package-lock.json
+/server/API_token.js

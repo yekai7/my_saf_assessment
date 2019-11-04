@@ -1,0 +1,25 @@
+<button type="button" (click)="back()">Back</button>
+<div *ngIf="!book?.data.length">
+    <h2>Your search of '{{ id }}' did not return any result</h2>
+</div>
+<div *ngFor="let b of book.data" class="bookContainer">
+    <div fxLayoutAlign="space-between center">
+        <div fxLayout="column">
+            <h1>{{b.title}}</h1>
+            <p>By: {{b.authors}}</p>
+            <p>Rating: {{b.rating}}</p>
+            <span>
+                Genres: <i *ngFor="let a of b.genres"> {{ a }}, </i>
+            </span>
+        </div>
+
+        <div fxLayoutAlign="end">
+            <img src="{{b.image_url}}" class="bookImg">
+        </div>
+    </div>
+    <p>{{b.description}}</p>
+</div>
+
+<div>
+    <h1>Reviews</h1>
+</div>
