@@ -20,6 +20,7 @@ export class BookService {
 
   getReview(bookId:string, title: string): Promise<ReviewResponse> {
     const params = new HttpParams().set("title",title)
+    // console.log("TITLE in getViewSvc", params)
     const f = this.http.get<ReviewResponse>(`http://localhost:3000/api/book/${bookId}/review`,{params}).toPromise();
     return f;
   }

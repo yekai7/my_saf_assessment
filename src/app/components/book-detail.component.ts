@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { BookResponse, ErrorResponse } from './../models';
+import { BookResponse, ErrorResponse, ReviewResponse } from './../models';
 import { Component, OnInit } from '@angular/core';
 import { BookService } from '../book.service';
 
@@ -13,30 +13,33 @@ export class BookDetailComponent implements OnInit {
 
   constructor(private bookSvc: BookService, private actRoute: ActivatedRoute, private router: Router) { }
   book: BookResponse = null;
+  reviews: ReviewResponse = null;
   id;
   title;
   ngOnInit() {
     this.id = this.actRoute.snapshot.params.book_id;
     this.bookSvc.getBook(this.id).then(result => {
       this.book = result;
-      this.title = result.data[0].title;
+      console.log(result.data[0].title);
+      this.bookSvc.getReview(this.id, result.data[0].title).then(result => {
+        console.log("review result", result)
+        this.reviews = result;
+      }).catch(err => {
+        const errorResponse = err as ErrorResponse;
+        console.log(`Status: ${errorResponse.status}\nMessage: ${errorResponse.message}`)
+      })
+
     }).catch(err => {
       const errorResponse = err as ErrorResponse;
       alert(`Status: ${errorResponse.status}\nMessage: ${errorResponse.message}`)
     })
 
-    this.bookSvc.getReview(this.id, this.title).then(reviewResult => {
-      console.log("review result", reviewResult)
-    }).catch(err => {
-      const errorResponse = err as ErrorResponse;
-      alert(`Status: ${errorResponse.status}\nMessage: ${errorResponse.message}`)
-    })
+
+    
+
   }
 
   back() {
     this.router.navigate(['/']);
   }
-
-
-
 }

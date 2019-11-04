@@ -20,6 +20,15 @@
     <p>{{b.description}}</p>
 </div>
 
-<div>
-    <h1>Reviews</h1>
+<div *ngIf="!reviews?.data.length">
+    <h2>No reviews available currently</h2>
+</div>
+<div *ngIf="reviews?.data.length">
+    <h2>Reviews</h2>
+    <div *ngFor="let r of reviews.data" class="reviewContainer">
+        <span>Review By: {{r.byline}} </span>
+        <p>Published on: {{r.publication_dt}} </p>
+        <a href="{{r.url}}">See full review here</a>
+        <p>Summary: {{r.summary}} </p>
+    </div>
 </div>

@@ -14,11 +14,6 @@ const SEARCH_BOOK_BY_BOOKID = 'select * from book2018 where book_id = ?';
 
 const searchBookByTitleOrAuthor = mkQuery(SEARCH_BOOK_BY_TITLE_OR_AUTHOR);
 const searchBookByBookdID = mkQuery(SEARCH_BOOK_BY_BOOKID);
-app.get("/api/all", (req, resp) => {
-    getAllTVshow().then(result => {
-        resp.status(200).json(result)
-    })
-})
 
 app.get('/api/search', (req, resp) => {
     const terms = req.query.terms;
@@ -73,11 +68,21 @@ app.get('/api/book/:book_id', (req, resp) => {
 })
 
 app.get('/api/book/:book_id/review', (req, resp) => {
-    const title = req.params.title;
+    const title = req.query.title;
     const url = `https://api.nytimes.com/svc/books/v3/reviews.json?title=${title}&api-key=${require('./API_token').token}`;
-    console.log("URL IS", url)
-    request.get(url).then(result=>{
-        console.log("BOOK REVIEW",result)
+    request.get(url).then(result => {
+        let reviewResponse = {
+            data: JSON.parse(result).results,
+            timestamp: (new Date()).getTime()
+        }
+        console.log("before retuning ,", reviewResponse)
+        resp.status(200).json(reviewResponse)
+    }).catch(err => {
+        resp.status(404).json({
+            status: 404,
+            message: err,
+            timestamp: (new Date()).getTime()
+        })
     })
 
 })

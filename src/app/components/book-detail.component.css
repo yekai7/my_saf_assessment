@@ -2,6 +2,6 @@
     height:25vh;
 }
 
-.bookContainer{
-    width: 80vw;
+.reviewContainer{
+    border:1px solid black;
 }
